@@ -1,4 +1,7 @@
 .idea/
 __pycache__/
 logs/*.log
+build/
+dist/
+*.spec
 .vscode/
