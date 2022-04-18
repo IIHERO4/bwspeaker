@@ -1,0 +1,8 @@
+{
+  "auth": {"key": "a7a"},
+  "server": "ws://localhost:5000",
+  "hotkeys": [
+      {"key": "g", "name": "TestHotkey", "sound": "1.mp3"}
+  ],
+  "room_id": "1"
+}

@@ -1,2 +1,3 @@
 keyboard
-
+websockets
+play_sounds
