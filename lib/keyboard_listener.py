@@ -25,9 +25,9 @@ class KeyBoardListener:
         self.listeners: Dict[str, List[EventHandler]] = {}
         self.loop = asyncio.get_running_loop()
 
-    def register_listener(self, name: str, key: str, callback: ListenerType, **options):
+    def register_listener(self, name: str, key: str, is_async, callback: ListenerType, **options):
         """Registers a fucking listener"""
-        actual = EventHandler(asyncio.iscoroutinefunction(callback), callback, name)
+        actual = EventHandler(is_async, callback, name)
 
         try:
             self.listeners[key].append(actual)

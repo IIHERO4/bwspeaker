@@ -41,7 +41,6 @@ class SpeakerClient:
                 self.ws: Optional[WebSocketClientProtocol] = await websockets.connect(
                     self.server_uri + ("/" if self.server_uri[-1] != "/" else "") + self.room_id
                 )
-
                 await self.ws.send(self.key)
                 return_code = await asyncio.wait_for(self.ws.recv(), timeout=5)
                 if return_code == "0":
@@ -55,6 +54,8 @@ class SpeakerClient:
                 await asyncio.sleep(5)
 
         self._worker_task = asyncio.create_task(self.worker())
+        self.recver_task = asyncio.create_task(self.recver())
+
         logging.info("connected!")
 
         self._load_config()
@@ -67,15 +68,16 @@ class SpeakerClient:
             await self.ws.send(self._get_key(sound_command))
 
     async def recver(self):
-        import winsound
         while True:
-            sound_key = self.ws.recv()
+            sound_key = await self.ws.recv()
             try:
                 file = self.mapping[sound_key]
             except KeyError:
                 logging.critical(f"bad sound key: {sound_key}")
                 return
-            winsound.PlaySound("1.mp3", winsound.SND_ASYNC | winsound.SND_ALIAS)
+            print(" wda")
+            play_sounds.play_file(Path(file), block=False)
+            print("ww")
 
     def _get_key(self, sound_command):
         for entry in self.mapping.items():
@@ -87,7 +89,7 @@ class SpeakerClient:
         for hotkey in cast(List[Dict[str, str]], self.config.get_key("hotkeys")):
             logging.info(f"Registering {hotkey['name']}")
             self.listener.register_listener(
-                hotkey["name"], hotkey["key"], lambda: self.queue.put_nowait(hotkey['sound'])
+                hotkey["name"], hotkey["key"], True, lambda: self.queue.put(hotkey['sound'])
             )
 
 
