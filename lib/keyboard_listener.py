@@ -43,5 +43,5 @@ class KeyBoardListener:
 
         for handler in self.listeners[key]:
             if handler.name == name:
-                keyboard.remove_hotkey(handler.callback)
+                keyboard.remove_hotkey(handler)
                 return handler
